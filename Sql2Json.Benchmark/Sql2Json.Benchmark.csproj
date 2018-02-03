@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp1.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Dapper" Version="1.50.4" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="1.1.2" />
+    <PackageReference Include="Newtonsoft.Json" Version="9.0.1" />
+    <PackageReference Include="Npgsql" Version="3.2.6" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="1.1.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Sql2Json.Core\Sql2Json.Core.csproj" />
+  </ItemGroup>
+
+</Project>
