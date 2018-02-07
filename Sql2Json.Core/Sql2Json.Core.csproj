@@ -4,14 +4,14 @@
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 		<Version>1.0.0.0</Version>
 		<Authors>Moritz Hasse</Authors>
-		<Copyright>Copyright 2017 - Moritz Hasse</Copyright>
+		<Copyright>Copyright 2018 - Moritz Hasse</Copyright>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-		<PackageTags>json query mapper database sql format</PackageTags>
+		<PackageTags>json query mapper database sql format fluent-interface</PackageTags>
 		<PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
-		<Description>This library helps to format query results (from a database) as JSON with arbitrary structure.This can help if your database does not provide such a feature (e.g. Oracle). High performance is major goal of this library. The mapping from releation data to json is achived by an intuitve anonymous type api.</Description>
+		<Description>This library helps to convert sql query result to JSON. This can help if your database does not provide such a feature (e.g. Oracle). The mapping can be configured with a nice fluent interface.</Description>
 		<PackageProjectUrl>https://github.com/mohzy83/Sql2Json</PackageProjectUrl>
 		<PackageLicenseUrl>https://github.com/mohzy83/Sql2Json/blob/master/License.txt</PackageLicenseUrl>
-		<PackageReleaseNotes>initial version</PackageReleaseNotes>
+		<PackageReleaseNotes></PackageReleaseNotes>
 	</PropertyGroup>
 
 	<PropertyGroup Condition=" '$(TargetFramework)' == 'net40' ">
