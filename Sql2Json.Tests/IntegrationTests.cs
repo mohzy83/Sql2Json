@@ -187,7 +187,7 @@ namespace Sql2Json.Tests
             // Execute Mapping
 
             using (var engine = new MappingEngine(() => new SqliteConnection("Data Source=Test.db"), compiledMapping))
-            {
+            
                 using (var ms = new MemoryStream())
                 {
                     var context = new Dictionary<string, object>();
@@ -196,7 +196,7 @@ namespace Sql2Json.Tests
                     var json = System.Text.Encoding.UTF8.GetString(ms.ToArray());
                     Assert.Equal(nestedResultsGeneratedJson, json);
                 }
-            }
+        
 
         }
 

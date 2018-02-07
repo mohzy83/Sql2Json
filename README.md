@@ -70,9 +70,11 @@ var mapping = JsonMappingBuilder.Root()
 ### Lets generate the JSON using the mapping
 ```csharp
 // Execute engine to create JSON
-using (var engine = new MappingEngine(() => new SqliteConnection("Data Source=Test.db"), mapping));
+using (var engine = new MappingEngine(() => new SqliteConnection("Data Source=Test.db"), mapping))
 using (var filestream = new FileStream("output.json", FileMode.CreateNew)) {
-    engine.ExecuteMapping(filestream, null);
+	var context = new Dictionary<string, object>();
+	context.Add("min_amount", 100);
+    engine.ExecuteMapping(filestream, context);
 }
 ```
 
