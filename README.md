@@ -69,8 +69,8 @@ var mapping = JsonMappingBuilder.Root()
 
 ### Lets generate the JSON using the mapping
 ```csharp
-// Execute mapping
-using (var engine = new MappingEngine(() => new SqliteConnection("Data Source=Test.db"), mappingDef.Compile()));
+// Execute engine to create JSON
+using (var engine = new MappingEngine(() => new SqliteConnection("Data Source=Test.db"), mapping));
 using (var filestream = new FileStream("output.json", FileMode.CreateNew)) {
     engine.ExecuteMapping(filestream, null);
 }
@@ -116,7 +116,7 @@ As an alternative for the fluent mapping you can use the anonymous type mapping 
 The following code creates the same JSON output.
 
 ```csharp
-var mappingDef = Define.QueryWithNestedResults("cid",
+var anonymousTypeMapping = Define.QueryWithNestedResults("cid",
 @"select c.id as cid, c.sname, c.fname, c.BDAY, c.ADR_STREET, c.ADR_CITY, i.id as iid, i.inv_date, i.amount, o.articles, o.id as oid
 from customer c
 left join orders o on c.id = o.customer_id
@@ -150,6 +150,10 @@ left join invoices i on c.id = i.customer_id"
         )
     }
 );
+var mapping = anonymousTypeMapping.Compile();
+using (var engine = new MappingEngine(() => new SqliteConnection("Data Source=Test.db"), mapping));
+...
+
 ```
 
 
