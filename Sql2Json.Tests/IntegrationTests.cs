@@ -18,7 +18,6 @@ namespace Sql2Json.Tests
             CreateTestDataBase();
         }
 
-
         /// <summary>
         /// ZERO WIDTH NO-BREAK SPACE + JSON
         /// </summary>
@@ -85,7 +84,7 @@ namespace Sql2Json.Tests
         }
 
         [Fact]
-        public void MappingBuilderTest()
+        public void TestMappingBuilderObjectAsRoot()
         {
             var mapping = JsonMappingBuilder.Root()
                 .Property("Version", "2.0")
@@ -119,8 +118,6 @@ namespace Sql2Json.Tests
                 //.Property("Last-Update", "2010-10-10")
                 .Result;
 
-
-
             using (var engine = new MappingEngine(() => new SqliteConnection("Data Source=Test.db"), mapping))
             {
                 using (var ms = new MemoryStream())
@@ -132,11 +129,57 @@ namespace Sql2Json.Tests
                     Assert.Equal(nestedResultsGeneratedJson, json);
                 }
             }
-
         }
 
         [Fact]
-        public void NestedResultsMappingTest()
+        public void TestMappingBuilderQueryAsRoot()
+        {
+            var mapping = JsonMappingBuilder.RootQueryWithNesting(
+                        @"select c.id as cid, sname,'2017-03-01' as LastUpdate, fname, BDAY, ADR_STREET, ADR_CITY, i.id as iid, i.inv_date, i.amount, o.article, o.id as oid
+                        from customer c
+                        left join orders o on c.id = o.customer_id
+                        left join invoices i on c.id = i.customer_id
+                        where i.amount > ${context:min_amount}
+                        order by c.id,o.id ",
+                        // Id Column
+                        "cid"
+                , cfg1 => cfg1
+                   .Column("Id", "cid")
+                   .Column("SName")
+                   .PropertyResolver("Age", typeof(AgeResolver))
+                   .Column("LastUpdate")
+                   .Column("Birthday", "BDAY")
+                   .Object("Address", cfg2 => cfg2
+                        .Column("Street", "ADR_STREET")
+                        .Column("City", "ADR_CITY")
+                    )
+                   .NestedResults("Invoices", "iid", cfg2 => cfg2
+                        .Column("InvoiceId", "iid")
+                        .Column("Inv_Date")
+                        .Column("TotalAmount", "amount")
+                    )
+                   .NestedResults("Orders", "oid", cfg2 => cfg2
+                        .Column("OrderId", "oid")
+                        .Column("ArticleName", "article")
+                    )
+                 ).Result
+                ;
+
+            using (var engine = new MappingEngine(() => new SqliteConnection("Data Source=Test.db"), mapping))
+            {
+                using (var ms = new MemoryStream())
+                {
+                    var context = new Dictionary<string, object>();
+                    context.Add("min_amount", 100);
+                    engine.ExecuteMapping(ms, context, false);
+                    var json = System.Text.Encoding.UTF8.GetString(ms.ToArray());
+                    Assert.Equal(nestedSelectGeneratedJson, json);
+                }
+            }
+        }
+
+        [Fact]
+        public void TestNestedResultsMappingAnonymousType()
         {
             TemplateDefinition nestedResultsMapping = Define.Template(
                             new
@@ -187,21 +230,21 @@ namespace Sql2Json.Tests
             // Execute Mapping
 
             using (var engine = new MappingEngine(() => new SqliteConnection("Data Source=Test.db"), compiledMapping))
-            
-                using (var ms = new MemoryStream())
-                {
-                    var context = new Dictionary<string, object>();
-                    context.Add("min_amount", 100);
-                    engine.ExecuteMapping(ms, context, false);
-                    var json = System.Text.Encoding.UTF8.GetString(ms.ToArray());
-                    Assert.Equal(nestedResultsGeneratedJson, json);
-                }
-        
+
+            using (var ms = new MemoryStream())
+            {
+                var context = new Dictionary<string, object>();
+                context.Add("min_amount", 100);
+                engine.ExecuteMapping(ms, context, false);
+                var json = System.Text.Encoding.UTF8.GetString(ms.ToArray());
+                Assert.Equal(nestedResultsGeneratedJson, json);
+            }
+
 
         }
 
         [Fact]
-        public void NestedSelectMappingTest()
+        public void TestNestedSelectMappingTestAnonymousType()
         {
             QueryDefinition nestedSelectMapping = Define.QueryResult("select id as cid, sname,'2017-03-01' as LastUpdate, fname, BDAY, ADR_STREET, ADR_CITY from customer",
                 new
@@ -249,6 +292,15 @@ namespace Sql2Json.Tests
                 }
             }
 
+        }
+    }
+
+
+    internal class AgeResolver : ICustomValueResolver
+    {
+        public object ResolveValueFromRow(IDictionary<string, object> row, IDictionary<string, object> context)
+        {
+            return 22;
         }
     }
 }

@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sql2Json.Core", "Sql2Json.C
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sql2Json.Tests", "Sql2Json.Tests\Sql2Json.Tests.csproj", "{DFE4C2F8-3F44-4D16-A68B-ECFD83908BB5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sql2Json.Benchmark", "Sql2Json.Benchmark\Sql2Json.Benchmark.csproj", "{37F453EC-8A3D-429A-9A97-9129F1102162}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sql2Json.Benchmark", "Sql2Json.Benchmark\Sql2Json.Benchmark.csproj", "{37F453EC-8A3D-429A-9A97-9129F1102162}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

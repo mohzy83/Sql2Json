@@ -34,6 +34,37 @@ namespace Sql2Json.Core.MappingBuilder
         }
 
         /// <summary>
+        /// Creates a mapping configuration with a query (array) as root
+        /// This is the point to start.
+        /// </summary>
+        /// <param name="query"></param>
+        /// <param name="config"></param>
+        /// <returns></returns>
+        public static IJsonMappingBuilder RootQuery(string query, Action<IJsonMappingBuilder> config)
+        {
+            var q = new JsonMappingBuilder(null).Query("", query, config);
+            var result = new JsonMappingBuilder(null);
+            result.Result = q.Result.MappedPropertyList.First().MappedQuery;
+            return result;
+        }
+
+        /// <summary>
+        /// Creates a mapping configuration with a query with nested results (array) as root
+        /// This is the point to start.
+        /// </summary>
+        /// <param name="query"></param>
+        /// <param name="idColumn"></param>
+        /// <param name="config"></param>
+        /// <returns></returns>
+        public static IJsonMappingBuilder RootQueryWithNesting(string query, string idColumn, Action<IJsonMappingBuilder> config)
+        {
+            var q = new JsonMappingBuilder(null).QueryWithNesting("", query, idColumn, config);
+            var result = new JsonMappingBuilder(null);
+            result.Result = q.Result.MappedPropertyList.First().MappedQueryWithNestedResults;
+            return result;
+        }
+
+        /// <summary>
         /// Adds a property with a static value
         /// </summary>
         /// <param name="name">Name of the property in resulting json document</param>
@@ -44,6 +75,14 @@ namespace Sql2Json.Core.MappingBuilder
             if (name == null) throw new ArgumentNullException("name cant be null");
             if (value == null) throw new ArgumentNullException("value cant be null");
             Result.MappedPropertyList.Add(new MappedProperty(name, value));
+            return this;
+        }
+
+        public IJsonMappingBuilder PropertyResolver(string propertyName, Type valueResolverType)
+        {
+            if (propertyName == null) throw new ArgumentNullException("propertyName cant be null");
+            if (valueResolverType == null) throw new ArgumentNullException("customValueResolver cant be null");
+            Result.MappedPropertyList.Add(new MappedProperty(propertyName, new MappedValueResolver(valueResolverType)));
             return this;
         }
 
@@ -121,6 +160,9 @@ namespace Sql2Json.Core.MappingBuilder
             }
             if (!found) throw new InvalidOperationException(string.Format("{0} with property name [{1}] is not allowed at this location. Parent of type [{2}] is missing.", methodName, property, typeof(TMappingType).Name));
         }
+
+
+
     }
 
 }
