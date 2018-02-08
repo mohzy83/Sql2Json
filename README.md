@@ -1,8 +1,8 @@
 # Sql2Json
 
-## Current Version 1.0.0
+## Current Version 1.0.1
 
-for dotnet core 1.0, 1.1 and .NET Framework 4.0 and higher
+for dotnet core 1.0, 1.1, 2.0 and .NET Framework 4.0 and higher
 
 
 ## Nuget
@@ -36,8 +36,7 @@ INSERT INTO orders (id, ordernumber, articles, customer_id) VALUES (2,'O-1002','
 
 ### Using the fluent interface to create the mapping
 ```csharp
-var mapping = JsonMappingBuilder.Root()
-	.QueryWithNesting("Results",
+var mapping = JsonMappingBuilder.RootQueryWithNesting(
 			@"select c.id as cid, sname,'2017-03-01' as LastUpdate, fname, BDAY, ADR_STREET, ADR_CITY, i.id as iid, i.inv_date, i.amount, o.article, o.id as oid
 			from customer c
 			left join orders o on c.id = o.customer_id
